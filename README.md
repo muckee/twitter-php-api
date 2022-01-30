@@ -118,7 +118,9 @@ Please ensure that you follow these instructions carefully and refer to third-pa
 
 >`$ sudo nano /etc/nginx/sites-available/twitter-php-api`
 
->This file must be edited according to the configuration of your specific environment. Documentation can be found here: [https://nginx.org/en/docs/](https://nginx.org/en/docs/)
+>This file must be edited according to the configuration of your specific environment.
+>General NGINX documentation can be found here: [https://nginx.org/en/docs/](https://nginx.org/en/docs/)
+>You should configure your server according to Slim's recommendations, found here: [https://www.slimframework.com/docs/v4/start/web-servers.html](https://www.slimframework.com/docs/v4/start/web-servers.html)
 
 >Once configured, the settings can be applied by issuing the following commands
 
