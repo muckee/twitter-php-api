@@ -138,7 +138,7 @@ Please ensure that you follow these instructions carefully and refer to third-pa
 #### Install necessary packages and PHP extensions
 >##### Linux
 ```
-$ sudo apt install unzip php-curl php-dom php-mbstring php-soap php-xdebug
+$ sudo apt install openssl curl unzip php-curl php-dom php-mbstring php-soap php-xdebug
 ```
 
 #### Install the latest version of Composer and add to PATH configuration.
