@@ -110,21 +110,37 @@ Please ensure that you follow these instructions carefully and refer to third-pa
 
 ### Prerequisites
 
-- #### Install PHP
+#### Install and configure NGINX
 ##### Linux
-```
-$ sudo apt install php7.4-cli
-```
-##### Windows
-Follow instructions here: https://www.php.net/manual/en/install.windows.php
+>`$ sudo apt install nginx`
 
-- #### Install necessary packages and PHP extensions
-##### Linux
+>`$ sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/twitter-php-api`
+
+>`$ sudo nano /etc/nginx/sites-available/twitter-php-api`
+
+>This file must be edited according to the configuration of your specific environment. Documentation can be found here: [https://nginx.org/en/docs/](https://nginx.org/en/docs/)
+
+>Once configured, the settings can be applied by issuing the following commands
+
+>`$ sudo ln -sf /etc/nginx/sites-available/twitter-php-api /etc/nginx/sites-enabled/`
+
+>`$ sudo systemctl restart nginx`
+
+#### Install PHP
+>##### Linux
+>`$ sudo apt install php7.4-cli`
+
+>##### Windows
+>Follow instructions here: https://www.php.net/manual/en/install.windows.php
+
+#### Install necessary packages and PHP extensions
+>##### Linux
 ```
 $ sudo apt install unzip php-curl php-dom php-mbstring php-soap php-xdebug
 ```
 
-- #### Install the latest version of Composer and add to PATH configuration. Instructions can be found here: [https://getcomposer.org/doc/00-intro.md](https://getcomposer.org/doc/00-intro.md)
+#### Install the latest version of Composer and add to PATH configuration.
+>Instructions can be found here: [https://getcomposer.org/doc/00-intro.md](https://getcomposer.org/doc/00-intro.md)
 
 
 ### Installation
@@ -139,10 +155,7 @@ $ sudo apt install unzip php-curl php-dom php-mbstring php-soap php-xdebug
    $ cd twitter-php-api
    $ composer install
    ```
-3. Run the application locally by issuing the following command from the project's root directory
-   ```sh
-   php -S localhost:8080 -t public public/index.php
-   ```
+3. Test the application by visiting the URL that you supplied in your nginx configuration file. If you are running on localhost and would like to use a FQDN in your NGINX file, you can edit your machine's hosts file to access the application via the FQDN in your browser.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
