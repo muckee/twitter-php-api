@@ -1,42 +1,20 @@
 # twitter-php-api
-Simple PHP application used to interact with the official Twitter API
+Simple PHP application for interacting with the official Twitter API
 
 <div id="top"></div>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
-
 
 <!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
-
 
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/muckee/twitter-php-api">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
 
-<h3 align="center">twitter-php-api</h3>
+  <h3 align="center">twitter-php-api</h3>
 
   <p align="center">
     project_description
@@ -51,8 +29,6 @@ Simple PHP application used to interact with the official Twitter API
     <a href="https://github.com/muckee/twitter-php-api/issues">Request Feature</a>
   </p>
 </div>
-
-
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -85,9 +61,7 @@ Simple PHP application used to interact with the official Twitter API
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
-A simple PHP application to allow interaction with the official Twitter API. This is a general purpose package, although it was intended for use by bots created with the Discord.js package.
+A simple PHP application to allow interaction with the official Twitter API. This package was designed to function as an interface between the Twitter API and bots created with the Discord.js package, though it can be implemented as a general-purpose Twitter API.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -96,8 +70,8 @@ A simple PHP application to allow interaction with the official Twitter API. Thi
 ### Built With
 
 * [Composer](https://getcomposer.org/)
-* [NGINX](https://nginx.org/)
 * [Slim](https://www.slimframework.com/)
+* [Twitter API](https://developer.twitter.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -110,7 +84,14 @@ Please ensure that you follow these instructions carefully and refer to third-pa
 
 ### Prerequisites
 
-#### Install and configure NGINX
+### Gain elevated access to the Twitter API
+In order to acquire the credentials required to utilise the Twitter API, please visit the [Twitter Developer Portal](https://developer.twitter.com/). Here you can create an account, register a project and create an app. During this process you will be provided with the various keys needed to interact with the API - be sure to read all the prompts carefully and store your credentials securely.
+
+In addition to the credentials provided during app configuration, it is necessary to create an access token/secret pair from within the settings section of your app within the Developer Portal.
+
+The credentials required to make use of this package are: OAuth Token (also called 'Consumer Token'), OAuth Token Secret (also called 'Consumer Token Secret'), Access Token, Access Token Secret
+
+#### Install and configure NGINX (or any other HTTP server)
 ##### Linux
 >`$ sudo apt install nginx`
 
@@ -126,7 +107,7 @@ Please ensure that you follow these instructions carefully and refer to third-pa
 
 >`$ sudo ln -sf /etc/nginx/sites-available/twitter-php-api /etc/nginx/sites-enabled/`
 
->`$ sudo systemctl restart nginx`
+>`$ sudo service nginx restart`
 
 #### Install PHP
 >##### Linux
@@ -137,13 +118,12 @@ Please ensure that you follow these instructions carefully and refer to third-pa
 
 #### Install necessary packages and PHP extensions
 >##### Linux
-```
-$ sudo apt install openssl curl unzip php-curl php-dom php-mbstring php-soap php-xdebug
-```
+>`$ sudo apt install openssl curl unzip php-curl php-dom php-mbstring php-soap php-xdebug`
 
 #### Install the latest version of Composer and add to PATH configuration.
->Instructions can be found here: [https://getcomposer.org/doc/00-intro.md](https://getcomposer.org/doc/00-intro.md)
+>Instructions for installing Composer can be found here: [https://getcomposer.org/doc/00-intro.md](https://getcomposer.org/doc/00-intro.md).
 
+>Ensure that you follow the full instructions to install Composer globally.
 
 ### Installation
 
@@ -152,12 +132,24 @@ $ sudo apt install openssl curl unzip php-curl php-dom php-mbstring php-soap php
    $ cd
    $ git clone https://github.com/muckee/twitter-php-api.git
    ```
-3. Navigate into project folder and install using Composer
+2. Navigate into project folder and install using Composer
    ```sh
    $ cd twitter-php-api
    $ composer install
    ```
-3. Test the application by visiting the URL that you supplied in your nginx configuration file. If you are running on localhost and would like to use a FQDN in your NGINX file, you can edit your machine's hosts file to access the application via the FQDN in your browser.
+3. Create a new `.env` file (or copy the sample file) and store the credentials you received from the Twitter API in this file.
+   ```sh
+   $ cp .env.sample .env
+   $ nano .env
+   ```
+**NOTE: Please research the most secure way to upload these credentials to your production server. Entry via the command-line is only suitable in a local, development environment**
+
+4. Create a symbolic link to the package in the `var/www/` folder
+   ```
+   $ sudo ln -sf /home/$USER/twitter-php-api /var/www/
+   ```
+
+5. Test the application by visiting the URL that you supplied in your nginx configuration file. If you are running on localhost and would like to use a FQDN in your NGINX file, you can edit your machine's hosts file to access the application via the FQDN in your browser. Alternatively, for rapid testing in a development environment, execute the command `$ composer start` from the project's root directory.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -165,10 +157,14 @@ $ sudo apt install openssl curl unzip php-curl php-dom php-mbstring php-soap php
 
 <!-- USAGE EXAMPLES -->
 ## Usage
+Note that the attributes of each end point are limitations defined by the Twitter API itself and cannot be altered. This list will be updated as more endpoints are supported by the package.
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+| Endpoints      |  Rate Limit      | Tweet Cap | Special Attributes |
+|:---------------|:----------------:|:---------:|--------------------|
+| POST /2/tweets | 200/15 mins/user | no        |-                   |
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+*** Update the following line in production
+*** _For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -177,12 +173,11 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [] Feature 1
-- [] Feature 2
-- [] Feature 3
-    - [] Nested Feature
+- [] Finish adding 'tweets' endpoints
+- [] Add 'users' endpoints
+- [] Add remaining endpoints
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/muckee/twitter-php-api/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -218,9 +213,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Your Name - [@muckee_eth](https://twitter.com/muckee_eth) - info@joshuaflood.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/muckee/twitter-php-api](https://github.com/muckee/twitter-php-api)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -239,16 +234,14 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
+[contributors-shield]: https://img.shields.io/github/contributors/muckee/twitter-php-api.svg?style=for-the-badge
+[contributors-url]: https://github.com/muckee/twitter-php-api/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/muckee/twitter-php-api.svg?style=for-the-badge
+[forks-url]: https://github.com/muckee/twitter-php-api/network/members
+[stars-shield]: https://img.shields.io/github/stars/muckee/twitter-php-api.svg?style=for-the-badge
+[stars-url]: https://github.com/muckee/twitter-php-api/stargazers
+[issues-shield]: https://img.shields.io/github/issues/muckee/twitter-php-api.svg?style=for-the-badge
+[issues-url]: https://github.com/muckee/twitter-php-api/issues
+[license-shield]: https://img.shields.io/github/license/muckee/twitter-php-api.svg?style=for-the-badge
+[license-url]: https://github.com/muckee/twitter-php-api/blob/master/LICENSE.txt
 [product-screenshot]: images/screenshot.png
