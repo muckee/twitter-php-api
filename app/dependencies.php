@@ -34,6 +34,19 @@ return function (ContainerBuilder $containerBuilder) {
             $twitterOAuthSettings = $settings->get('twitterOAuth');
 
             return new TwitterOAuth(...$twitterOAuthSettings);
+        },
+        TwitterOAuth::class => function (ContainerInterface $c) {
+            $settings = $c->get(SettingsInterface::class);
+
+            $twitterOAuthSettings = $settings->get('twitterOAuth');
+
+            return new TwitterOAuth(...$twitterOAuthSettings);
+        },
+        TwitterAction::class => function (ContainerInterface $c) {
+            return new TwitterAction($c->get('twitterOAuth'));
+        },
+        RemoteTwitterRepository::class => function (ContainerInterface $c) {
+            return new RemoteTwitterRepository($c->get('twitterOAuth'));
         }
     ]);
 };

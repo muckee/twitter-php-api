@@ -18,35 +18,6 @@ return function (App $app) {
 
     // This group is structured in the same format as the official Twitter API
     $app->group('/2', function (Group $group) {
-        $group->post('/tweets', function (
-            Request $request,
-            Response $response
-        ) {
-            // Retrieve desired tweet text from POST request
-            $queryParams = $request->getQueryParams();
-            $text = $queryParams['text'];
-
-            // Publish tweet
-            $twitterOAuth = $this->get('twitterOAuth');
-            $statuses = $twitterOAuth->post(
-                "statuses/update",
-                [
-                    "status" => $text
-                ]
-            );
-
-            // Derive tweet URI from response
-            $payload = 'https://twitter.com/' .
-                $statuses->user->id_str .
-                '/status/' .
-                $statuses->id_str;
-
-            // Add tweet URI to response
-            $response->getBody()->write($payload);
-
-            // Return response to user
-            return $response
-                ->withHeader('Content-Type', 'text/html');
-        });
+        $group->post('/tweets', UpdateTwitterAction::class);
     });
 };
