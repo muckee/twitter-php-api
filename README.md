@@ -186,7 +186,7 @@ See the [open issues](https://github.com/muckee/twitter-php-api/issues) for a fu
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Please see [https://github.com/muckee/twitter-php-api/CONTRIBUTING.md](https://github.com/muckee/twitter-php-api/CONTRIBUTING.md) for details.
+Please see '[CONTRIBUTING](https://github.com/muckee/twitter-php-api/blob/main/CONTRIBUTING.md)' for details.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
