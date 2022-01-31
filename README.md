@@ -14,7 +14,7 @@ Simple PHP application for interacting with the official Twitter API
 <br />
 <div align="center">
 
-  <h3 align="center">twitter-php-api</h3>
+  <h3 align="center">Twitter PHP API</h3>
 
   <p align="center">
     project_description
