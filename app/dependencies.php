@@ -3,14 +3,16 @@
 declare(strict_types=1);
 
 use Abraham\TwitterOAuth\TwitterOAuth;
-
-use App\Application\Settings\SettingsInterface;
 use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+
+use App\Application\Settings\SettingsInterface;
+
+use App\Application\Handlers\TwitterQueryHandler;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -35,6 +37,9 @@ return function (ContainerBuilder $containerBuilder) {
 
             return new TwitterOAuth(...$twitterOAuthSettings);
         },
+        'twitterQueryHandler' => function (ContainerInterface $c) {
+            return new TwitterQueryHandler();
+        },
         TwitterOAuth::class => function (ContainerInterface $c) {
             $settings = $c->get(SettingsInterface::class);
 
@@ -43,7 +48,10 @@ return function (ContainerBuilder $containerBuilder) {
             return new TwitterOAuth(...$twitterOAuthSettings);
         },
         TwitterAction::class => function (ContainerInterface $c) {
-            return new TwitterAction($c->get('twitterOAuth'));
+            $twitterOAuth = $c->get('twitterOAuth');
+            $twitterQueryHandler = $c->get('twitterQueryHandler');
+
+            return new TwitterAction($twitterOAuth, $twitterQueryHandler);
         },
         RemoteTwitterRepository::class => function (ContainerInterface $c) {
             return new RemoteTwitterRepository($c->get('twitterOAuth'));

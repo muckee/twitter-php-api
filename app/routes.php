@@ -2,9 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Application\Actions\User\ListUsersAction;
-use App\Application\Actions\User\ViewUserAction;
-use App\Application\Actions\Twitter\UpdateTwitterAction;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
@@ -17,7 +14,11 @@ return function (App $app) {
     });
 
     // This group is structured in the same format as the official Twitter API
+    // In production, all Twitter API functions will be callable from the URI
+    // Where the endpoint in the official documentation is appended to the URL
+    // of this server. i.e. mywebsite.com/2/tweets
     $app->group('/2', function (Group $group) {
-        $group->post('/tweets', UpdateTwitterAction::class);
+
+        require __DIR__ . '/routes/twitter.php';
     });
 };
