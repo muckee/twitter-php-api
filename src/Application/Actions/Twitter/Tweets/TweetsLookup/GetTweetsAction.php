@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Actions\Twitter\TweetsLookup;
+namespace App\Application\Actions\Twitter\Tweets\TweetsLookup;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -17,16 +17,18 @@ class GetTweetsAction extends TwitterAction
   {
     // Define list of known query options for this action
     $options = [
-      'ids',
-      'expansions',
-      'media.fields',
-      'place.fields',
-      'poll.fields',
-      'tweet.fields',
-      'user.fields'
+      'query' => [
+        'ids',
+        'expansions',
+        'media.fields',
+        'place.fields',
+        'poll.fields',
+        'tweet.fields',
+        'user.fields'
+      ]
     ];
 
-    $params = $this->sortQueryParams($options);
+    $params = $this->sortParams($options);
 
     // Get tweets based on list of IDs
     $payload = $this->twitterRepository->getTweets($params);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Actions\Twitter\Timelines;
+namespace App\Application\Actions\Twitter\Tweets\Timelines;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -16,27 +16,29 @@ class GetUserTimelineAction extends TwitterAction
     protected function action(): Response
     {
 
+      // Retrieve ID argument from request
+      $id =''.$this->args['id'];
+
        // Define list of known query options for this action
       $options = [
-        'end_time',
-        'exclude',
-        'expansions',
-        'max_results',
-        'media.fields',
-        'pagination_token',
-        'place.fields',
-        'poll.fields',
-        'since_id',
-        'start_time',
-        'tweet.fields',
-        'until_id',
-        'user.fields'
+        'query' => [
+          'end_time',
+          'exclude',
+          'expansions',
+          'max_results',
+          'media.fields',
+          'pagination_token',
+          'place.fields',
+          'poll.fields',
+          'since_id',
+          'start_time',
+          'tweet.fields',
+          'until_id',
+          'user.fields'
+        ]
       ];
 
-      $params = $this->sortQueryParams($options);
-
-      // Retrieve ID argument from request
-      $id = $this->args['id'];
+      $params = $this->sortParams($options);
 
       // Retrieve user timeline from Twitter API
       $payload = $this->twitterRepository->getUserTimeline(

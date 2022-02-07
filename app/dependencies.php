@@ -14,6 +14,8 @@ use App\Application\Settings\SettingsInterface;
 
 use App\Application\Handlers\TwitterQueryHandler;
 
+use App\Infrastructure\Remote\RemoteTwitterRepository;
+
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
         LoggerInterface::class => function (ContainerInterface $c) {
@@ -49,12 +51,11 @@ return function (ContainerBuilder $containerBuilder) {
         },
         TwitterAction::class => function (ContainerInterface $c) {
             $twitterOAuth = $c->get('twitterOAuth');
-            $twitterQueryHandler = $c->get('twitterQueryHandler');
 
-            return new TwitterAction($twitterOAuth, $twitterQueryHandler);
+            return new TwitterAction($twitterOAuth);
         },
         RemoteTwitterRepository::class => function (ContainerInterface $c) {
-            return new RemoteTwitterRepository($c->get('twitterOAuth'));
+            return new TwitterRepository($c->get('twitterOAuth'));
         }
     ]);
 };

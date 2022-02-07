@@ -7,6 +7,10 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
+// TODO: Reject all requests unless sent from localhost
+// TODO: Implement JWT for third-party authorization
+// TODO: Implement programmatic retrieval of OAuth credentials
+
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 use Psr\Log\LoggerInterface;

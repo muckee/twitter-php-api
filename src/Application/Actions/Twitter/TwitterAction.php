@@ -9,7 +9,6 @@ use App\Application\Actions\Action;
 use Psr\Log\LoggerInterface;
 
 use App\Domain\Twitter\TwitterRepository;
-use App\Application\Handlers\TwitterQueryHandler;
 
 abstract class TwitterAction extends Action
 {
@@ -18,28 +17,76 @@ abstract class TwitterAction extends Action
 
   public function __construct(
     LoggerInterface $logger,
-    TwitterRepository $twitterRepository,
-    TwitterQueryHandler $twitterQueryHandler
+    TwitterRepository $twitterRepository
   ) {
-
     parent::__construct($logger);
 
     $this->twitterRepository = $twitterRepository;
-    $this->twitterQueryHandler = $twitterQueryHandler;
   }
 
   /**
    * Extract valid options from query params
+   * @param array[] $options
    * @param string[] $keys
    * @return string[]
    */
-  protected function sortQueryParams(array $keys): array {
+  protected function sortParams(
+    array $options
+  ): array {
 
-    $params = $this->twitterQueryHandler->sortQueries(
-      $keys,
-      $this->request->getQueryParams()
-    );
+    // Initialise empty array to store parameters
+    $params = [];
+
+    // Iterate over list of option groups
+    foreach($options as $k => $v) {
+
+      // Retrieve parameters of current object type from request object
+      $data = $this->selectParams($k);
+
+      // Check if any parameters were retrieved from request object
+      if(COUNT($data) > 0) {
+
+        $p = $this->validateParams($v, $data);
+
+        // Check if any valid parameters were found
+        if(COUNT($p) > 0) {
+
+          // Merge new parameters with existing array
+          $params = array_merge($params, $p);
+        }
+      }
+    }
 
     return $params;
   }
+
+  private function selectParams($type) {
+    // Retrieve params of supplied type from request object
+    switch($type) {
+      case 'query':
+        return $this->request->getQueryParams();
+      case 'body':
+        return $this->request->getParsedBody();
+      default:
+        return [];
+    }
+  }
+
+  private function validateParams(
+    $keys,
+    $params
+  ) {
+
+    // Filter $params for only parameters found in $keys
+    $p = array_filter(
+      $params,
+      function($k) use ($keys) {
+        return in_array($k, $keys);
+      },
+      ARRAY_FILTER_USE_KEY
+    );
+
+    return $p;
+  }
+
 }
