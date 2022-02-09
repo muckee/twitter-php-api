@@ -39,13 +39,10 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
       // Iterate over resulting tweets
       foreach($tweets->data as $result) {
 
-        $id = $result->id;
-        $text = $result->text;
-  
-        $tweet = new Tweet($id, $text);
+        $tweet = new Tweet();
+        $tweet->setByJson($result);
 
-        // Append tweet text to $results array
-        array_push($results, $tweet);
+        $results[] = $tweet;
       }
 
       return $results;
@@ -63,10 +60,9 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
 
     if ($this->exceptionHandler->handleErrors($this->twitterOAuth->getLastHttpCode(), $result)) {
 
-      $id = $result->data->id;
-      $text = $result->data->text;
 
-      $tweet = new Tweet($id, $text);
+      $tweet = new Tweet();
+      $tweet->setByJson($result->data);
 
       return $tweet;
     };
@@ -84,10 +80,8 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
 
     if ($this->exceptionHandler->handleErrors($this->twitterOAuth->getLastHttpCode(), $result)) {
 
-      $id = $result->data->id;
-      $text = $result->data->text;
-
-      $tweet = new Tweet($id, $text);
+      $tweet = new Tweet();
+      $tweet->setByJson($result->data);
 
       return $tweet;
     };
@@ -131,10 +125,8 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
       // Iterate over results
       for($i=0;$i<COUNT($result->data);$i++) {
 
-        // Create new Tweet object from each result
-        $id = $result->data[$i]->id;
-        $text = $result->data[$i]->text;
-        $tweet = new Tweet($id, $text);
+        $tweet = new Tweet();
+        $tweet->setByJson($result->data[$i]);
 
         // Append Tweet object to $tweets array
         $tweets[] = $tweet;
@@ -164,10 +156,8 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
       // Iterate over results
       for($i=0;$i<COUNT($result->data);$i++) {
 
-        // Create new Tweet object from each result
-        $id = $result->data[$i]->id;
-        $text = $result->data[$i]->text;
-        $tweet = new Tweet($id, $text);
+        $tweet = new Tweet();
+        $tweet->setByJson($result->data[$i]);
 
         // Append Tweet object to $tweets array
         $tweets[] = $tweet;
@@ -194,10 +184,8 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
       // Iterate over results
       for($i=0;$i<COUNT($result->data);$i++) {
 
-        // Create new Tweet object from each result
-        $id = $result->data[$i]->id;
-        $text = $result->data[$i]->text;
-        $tweet = new Tweet($id, $text);
+        $tweet = new Tweet();
+        $tweet->setByJson($result->data[$i]);
 
         // Append Tweet object to $tweets array
         $tweets[] = $tweet;
@@ -232,10 +220,10 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
       // Initialise empty array to store list of existing rules
       $rules = array();
 
-      $summary = new Metadata();
-      $summary->setSent($result->meta->sent);
+      $meta = new Metadata();
+      $meta->setByJson($result->meta);
 
-      $ruleset = new FilteredStreamRuleSet( $rules, $summary );
+      $ruleset = new FilteredStreamRuleSet( $rules, $meta );
 
       /**
        * Check if result contains data.
@@ -244,6 +232,7 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
        */
       if( array_key_exists( 'add', $params ) ) {
 
+        // TODO: metadata should be stored in Metadata object
         $ruleset->setSummaryChanged( $result->meta->summary->created );
 
         $ruleset->setSummaryNotChanged( $result->meta->summary->not_created );
@@ -288,11 +277,10 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
   
     if ($this->exceptionHandler->handleErrors($this->twitterOAuth->getLastHttpCode(), $result)) {
 
-      $summary = new Metadata();
-      $summary->setSent($result->meta->sent);
-      $summary->setResultCount($result->meta->result_count);
+      $meta = new Metadata();
+      $meta->setByJson($result->meta);
 
-      $ruleset = new FilteredStreamRuleSet(array(), $summary);
+      $ruleset = new FilteredStreamRuleSet(array(), $meta);
 
       $this->sortFilteredStreamRules($ruleset, $result->data);
 
@@ -379,25 +367,17 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
   
     if ( $this->exceptionHandler->handleErrors( $this->twitterOAuth->getLastHttpCode(), $result ) ) {
 
-      // Create Metadata object and store result metadata
       $meta = new Metadata();
-      $meta->setResultCount($result->meta->result_count);
-      $meta->setNextToken($result->meta->next_token);
+      $meta->setByJson($result->meta);
 
       // Initialise empty array to store list of users
       $users = array();
 
       // Iterate over resulting list of users
       for( $i=0; $i<COUNT( $result->data ); $i++ ) {
-
-        $userData = $result->data[$i];
-
-        // Create new User object from user data
-        $user = new User(
-          $userData->id,
-          $userData->name,
-          $userData->username
-        );
+  
+        $user = new User();
+        $user->setByJson($result->data[$i]);
 
         // Append new User object to $users array
         $users[] = $user;
@@ -456,21 +436,18 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
   
     if ( $this->exceptionHandler->handleErrors( $this->twitterOAuth->getLastHttpCode(), $result ) ) {
 
-      // Create Metadata object from result
       $meta = new Metadata();
-      $meta->setResultCount($result->meta->result_count);
-      $meta->setNextToken($result->meta->next_token);
+      $meta->setByJson($result->meta);
 
       // Create list of User objects from result
       $users = array();
 
       for( $i=0; $i<COUNT( $result->data ); $i++ ) {
-        $userData = $result->data[$i];
-        $users[] = new User(
-          $userData->id,
-          $userData->name,
-          $userData->username
-        );
+  
+        $user = new User();
+        $user->setByJson($result->data[$i]);
+
+        $users[] = $user;
       }
 
       return new TwitterList( $users, $meta );
@@ -491,20 +468,18 @@ class RemoteTweetsRepository extends RemoteTwitterRepository
   
     if ( $this->exceptionHandler->handleErrors( $this->twitterOAuth->getLastHttpCode(), $result ) ) {
 
-      // Create Metadata object from result
       $meta = new Metadata();
-      $meta->setResultCount($result->meta->result_count);
-      $meta->setNextToken($result->meta->next_token);
+      $meta->setByJson($result->meta);
 
       // Create list of Tweet objects from result
       $tweets = array();
 
       for( $i=0; $i<COUNT( $result->data ); $i++ ) {
-        $tweetData = $result->data[$i];
-        $tweets[] = new Tweet(
-          $tweetData->id,
-          $tweetData->text
-        );
+
+        $tweet = new Tweet();
+        $tweet->setByJson($result->data[$i]);
+
+        $tweets[] = $tweet;
       }
 
       return new TwitterList($tweets, $meta);

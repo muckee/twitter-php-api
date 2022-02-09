@@ -8,15 +8,15 @@ use JsonSerializable;
 
 class Tweet implements JsonSerializable
 {
+  /**
+   * @var string $id
+   */
   private ?string $id;
 
+  /**
+   * @var string $text
+   */
   private string $text;
-
-  public function __construct(?string $id, string $text)
-  {
-    $this->id = $id;
-    $this->text = $text;
-  }
 
   public function getId(): ?string
   {
@@ -26,6 +26,12 @@ class Tweet implements JsonSerializable
   public function getText(): string
   {
     return $this->text;
+  }
+
+  public function setByJson($json)
+  {
+    $this->id = $json->id;
+    $this->text = $json->text;
   }
 
   // TODO: Either patch Intelephense or declare type

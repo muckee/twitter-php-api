@@ -8,6 +8,15 @@ use JsonSerializable;
 
 class Metadata implements JsonSerializable
 {
+  const AVAILABLE_PROPERTIES = array(
+    'sent',
+    'next_token',
+    'result_count',
+    'changed',
+    'not_changed',
+    'valid',
+    'invalid'
+  );
 
   private ?string $sent;
 
@@ -119,6 +128,23 @@ class Metadata implements JsonSerializable
     $this->invalid = $invalid;
   }
 
+  /**
+   * @param int $invalid
+   */
+  public function setByJson($json)
+  {
+    $props = self::AVAILABLE_PROPERTIES;
+
+    for($i=0; $i<COUNT($props); $i++) {
+
+      $property = $props[$i];
+
+      if(property_exists($json, $property)) {
+        $this->{$property} = $json->{$property};
+      }
+    }
+  }
+
   // TODO: Either patch Intelephense or declare type
   // #[\ReturnTypeWillChange]
   public function jsonSerialize(): array
@@ -130,24 +156,16 @@ class Metadata implements JsonSerializable
      */
 
      // Define all possible valid Metadata property names
-     $available_properties = array(
-      'sent',
-      'next_token',
-      'result_count',
-      'changed',
-      'not_changed',
-      'valid',
-      'invalid'
-    );
+    $props = self::AVAILABLE_PROPERTIES;
 
     // Create empty array to store payload
     $payload = array();
 
     // Iterate over available properties
-    foreach( $available_properties as $v ) {
+    foreach( $props as $v ) {
 
       // Check if property is not null
-      if($this->{$v} != null) {
+      if($this->{$v} !== null) {
 
         // Append property to payload array
         $payload[$v] = $this->{$v};

@@ -10,6 +10,7 @@ use App\Domain\Twitter\Metadata;
 
 class TwitterList implements JsonSerializable
 {
+  // TODO: extend this class into TweetList and UserList classes
   private array $list;
 
   private Metadata $meta;
@@ -35,7 +36,7 @@ class TwitterList implements JsonSerializable
   public function jsonSerialize(): array
   {
     return [
-      'data' => $this->list,
+      'list' => $this->list,
       'meta' => $this->meta,
     ];
   }

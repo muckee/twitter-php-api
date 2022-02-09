@@ -12,16 +12,9 @@ class User implements JsonSerializable
 
   private ?string $id;
 
-  private string $name;
+  private ?string $name;
 
-  private string $username;
-
-  public function __construct(?string $id, string $name, string $username)
-  {
-    $this->id = $id;
-    $this->name = $name;
-    $this->username = $username;
-  }
+  private ?string $username;
 
   public function getId(): ?string
   {
@@ -36,6 +29,13 @@ class User implements JsonSerializable
   public function getUsername(): string
   {
     return $this->username;
+  }
+
+  public function setByJson($json)
+  {
+    $this->id = $json->id;
+    $this->name = $json->name;
+    $this->username = $json->username;
   }
 
   // TODO: Either patch Intelephense or declare type

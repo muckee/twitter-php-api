@@ -20,6 +20,9 @@ class TwitterExceptionHandler
       $status == ( 200 || 201 )
     ) {
 
+      // TODO: Remove following debugging line in production
+      // throw new TwitterException( json_encode($response) );
+
       // Check for known errors
       if ( property_exists( $response, 'errors' ) ) {
 

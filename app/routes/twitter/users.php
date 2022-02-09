@@ -20,6 +20,21 @@ use App\Application\Actions\Twitter\Users\UsersLookup\GetUsersByUsernameAction;
 use App\Application\Actions\Twitter\Users\UsersLookup\GetUserByUsernameAction;
 use App\Application\Actions\Twitter\Users\UsersLookup\GetAuthorizedUserAction;
 
+use App\Application\Actions\Twitter\Users\Follows\FollowsLookup\GetFollowingByUserIdAction;
+use App\Application\Actions\Twitter\Users\Follows\FollowsLookup\GetFollowingByUsernameAction;
+use App\Application\Actions\Twitter\Users\Follows\FollowsLookup\GetFollowersByUserIdAction;
+use App\Application\Actions\Twitter\Users\Follows\FollowsLookup\GetFollowersByUsernameAction;
+use App\Application\Actions\Twitter\Users\Follows\ManageFollows\FollowUserAction;
+use App\Application\Actions\Twitter\Users\Follows\ManageFollows\UnfollowUserAction;
+
+use App\Application\Actions\Twitter\Users\Blocks\BlocksLookup\GetBlockedUsersAction;
+use App\Application\Actions\Twitter\Users\Blocks\ManageBlocks\BlockUserAction;
+use App\Application\Actions\Twitter\Users\Blocks\ManageBlocks\UnblockUserAction;
+
+use App\Application\Actions\Twitter\Users\Mutes\MutesLookup\GetMutedUsersAction;
+use App\Application\Actions\Twitter\Users\Mutes\ManageMutes\MuteUserAction;
+use App\Application\Actions\Twitter\Users\Mutes\ManageMutes\UnmuteUserAction;
+
 $group->get('/users', GetUsersByIdAction::class);
 
 $group->group('/users', function (Group $users) {
@@ -28,7 +43,18 @@ $group->group('/users', function (Group $users) {
 
   $users->get('/by', GetUsersByUsernameAction::class);
 
-  $users->get('/by/username/{username}', GetUserByUsernameAction::class);
+  // Get a list of tweets based on a CSV string of tweet IDs
+  $users->group('/by/username', function (Group $byUsername) {
+
+    $byUsername->get('/{username}', GetUserByUsernameAction::class);
+
+    $byUsername->group('/{username}', function(Group $user) {
+
+      $user->get('/following', GetFollowingByUsernameAction::class);
+
+      $user->get('/followers', GetFollowersByUsernameAction::class);
+    });
+  });
 
   $users->get('/{user_id}', GetUserByIdAction::class);
 
@@ -60,5 +86,25 @@ $group->group('/users', function (Group $users) {
     $user->post('/likes', LikeTweetAction::class);
 
     $user->delete('/likes/{tweet_id}', DeleteLikedTweetAction::class);
+
+    $user->get('/following', GetFollowingByUserIdAction::class);
+
+    $user->post('/following', FollowUserAction::class);
+
+    $user->delete('/following/{target_user_id}', UnfollowUserAction::class);
+
+    $user->get('/followers', GetFollowersByUserIdAction::class);
+
+    $user->get('/blocking', GetBlockedUsersAction::class);
+
+    $user->post('/blocking', BlockUserAction::class);
+
+    $user->delete('/blocking/{target_user_id}', UnblockUserAction::class);
+
+    $user->get('/muting', GetMutedUsersAction::class);
+
+    $user->post('/muting', MuteUserAction::class);
+
+    $user->delete('/muting', UnmuteUserAction::class);
   });
 });
