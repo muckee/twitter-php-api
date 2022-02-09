@@ -22,7 +22,7 @@ class DeleteRetweetAction extends TwitterAction
 
       // Return response to user
       return $this
-        ->respondWithData(json_decode($payload))
+        ->respondWithData($payload)
         ->withHeader('Content-Type', 'application/json');
     }
 }

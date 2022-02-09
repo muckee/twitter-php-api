@@ -49,7 +49,7 @@ class GetUserTimelineAction extends TwitterAction
       // Return response to user
       // TODO: Create models for all JSON responses in order to properly declare types
       return $this->respondWithData(
-                    json_decode($payload)
+                    $payload
                   )->withHeader(
                     'Content-Type', 'application/json'
                   );

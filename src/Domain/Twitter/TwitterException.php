@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Twitter\TwitterException;
+namespace App\Domain\Twitter;
 
 use App\Domain\DomainException\DomainException;
 

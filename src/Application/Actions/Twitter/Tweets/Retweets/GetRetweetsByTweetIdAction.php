@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\TwitterAction;
 
-class GetRetweetsByUserIdAction extends TwitterAction
+class GetRetweetsByTweetIdAction extends TwitterAction
 {
     /**
      * {@inheritdoc}
@@ -32,11 +32,11 @@ class GetRetweetsByUserIdAction extends TwitterAction
   
       $params = $this->sortParams($options);
 
-      $payload = $this->twitterRepository->getRetweetsByUserId($id, $params);
+      $payload = $this->twitterRepository->getRetweetsByTweetId($id, $params);
 
       // Return response to user
       return $this
-        ->respondWithData(json_decode($payload))
+        ->respondWithData($payload)
         ->withHeader('Content-Type', 'application/json');
     }
 }
