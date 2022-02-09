@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Actions\Twitter\Tweets\Retweets;
+namespace App\Application\Actions\Twitter\Tweets\Retweets\RetweetsLookup;
 
 use Psr\Http\Message\ResponseInterface as Response;
 

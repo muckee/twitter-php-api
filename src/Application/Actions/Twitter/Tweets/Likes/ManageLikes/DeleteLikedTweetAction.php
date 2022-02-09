@@ -2,31 +2,24 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Actions\Twitter\Tweets\Likes;
+namespace App\Application\Actions\Twitter\Tweets\Likes\ManageLikes;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class LikeTweetAction extends TweetsAction
+class DeleteLikedTweetAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
      */
     protected function action(): Response
     {
-
       $id = ''.$this->args['user_id'];
 
-      $options = [
-        'body' => [
-          'tweet_id'
-        ]
-      ];
-  
-      $params = $this->sortParams($options);
+      $tweetId = ''.$this->args['tweet_id'];
 
-      $payload = $this->tweetsRepository->likeTweet($id, $params);
+      $payload = $this->tweetsRepository->deleteLikedTweet($id, $tweetId);
 
       // Return response to user
       return $this

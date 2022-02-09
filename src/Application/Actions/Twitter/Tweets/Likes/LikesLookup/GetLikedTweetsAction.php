@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Actions\Twitter\Tweets\Likes;
+namespace App\Application\Actions\Twitter\Tweets\Likes\LikesLookup;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class GetLikingUsersAction extends TweetsAction
+class GetLikedTweetsAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
@@ -16,7 +16,7 @@ class GetLikingUsersAction extends TweetsAction
     protected function action(): Response
     {
 
-      $tweet_id = ''.$this->args['tweet_id'];
+      $id = ''.$this->args['user_id'];
 
       $options = [
         'query' => [
@@ -33,7 +33,7 @@ class GetLikingUsersAction extends TweetsAction
   
       $params = $this->sortParams($options);
 
-      $payload = $this->tweetsRepository->getLikingUsers($tweet_id, $params);
+      $payload = $this->tweetsRepository->getLikedTweets($id, $params);
 
       // Return response to user
       return $this

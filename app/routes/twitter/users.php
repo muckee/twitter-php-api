@@ -7,12 +7,12 @@ use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 use App\Application\Actions\Twitter\Tweets\Timelines\GetUserTimelineAction;
 use App\Application\Actions\Twitter\Tweets\Timelines\GetUserMentionsTimelineAction;
 
-use App\Application\Actions\Twitter\Tweets\Retweets\CreateRetweetAction;
-use App\Application\Actions\Twitter\Tweets\Retweets\DeleteRetweetAction;
+use App\Application\Actions\Twitter\Tweets\Retweets\ManageRetweets\CreateRetweetAction;
+use App\Application\Actions\Twitter\Tweets\Retweets\ManageRetweets\DeleteRetweetAction;
 
-use App\Application\Actions\Twitter\Tweets\Likes\GetLikedTweetsAction;
-use App\Application\Actions\Twitter\Tweets\Likes\LikeTweetAction;
-use App\Application\Actions\Twitter\Tweets\Likes\DeleteLikedTweetAction;
+use App\Application\Actions\Twitter\Tweets\Likes\LikesLookup\GetLikedTweetsAction;
+use App\Application\Actions\Twitter\Tweets\Likes\ManageLikes\LikeTweetAction;
+use App\Application\Actions\Twitter\Tweets\Likes\ManageLikes\DeleteLikedTweetAction;
 
 use App\Application\Actions\Twitter\Users\UsersLookup\GetUsersByIdAction;
 use App\Application\Actions\Twitter\Users\UsersLookup\GetUserByIdAction;

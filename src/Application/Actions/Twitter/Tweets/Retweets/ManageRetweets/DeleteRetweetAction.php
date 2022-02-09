@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Actions\Twitter\Tweets\Retweets;
+namespace App\Application\Actions\Twitter\Tweets\Retweets\ManageRetweets;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class CreateRetweetAction extends TweetsAction
+class DeleteRetweetAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
@@ -16,16 +16,9 @@ class CreateRetweetAction extends TweetsAction
     protected function action(): Response
     {
       $id = ''.$this->args['user_id'];
+      $sourceTweetId = ''.$this->args['source_tweet_id'];
 
-      $options = [
-        'body' => [
-          'tweet_id'
-        ]
-      ];
-  
-      $params = $this->sortParams($options);
-
-      $payload = $this->tweetsRepository->createRetweet($id, $params);
+      $payload = $this->tweetsRepository->deleteRetweet($id, $sourceTweetId);
 
       // Return response to user
       return $this

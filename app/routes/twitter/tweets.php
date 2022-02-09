@@ -18,9 +18,9 @@ use App\Application\Actions\Twitter\Tweets\FilteredStream\UpdateFilteredStreamRu
 use App\Application\Actions\Twitter\Tweets\FilteredStream\GetFilteredStreamRulesAction;
 use App\Application\Actions\Twitter\Tweets\FilteredStream\GetFilteredStreamAction;
 
-use App\Application\Actions\Twitter\Tweets\Retweets\GetRetweetsByTweetIdAction;
+use App\Application\Actions\Twitter\Tweets\Retweets\RetweetsLookup\GetRetweetsByTweetIdAction;
 
-use App\Application\Actions\Twitter\Tweets\Likes\GetLikingUsersAction;
+use App\Application\Actions\Twitter\Tweets\Likes\LikesLookup\GetLikingUsersAction;
 
 use App\Application\Actions\Twitter\Tweets\HideReplies\HideReplyAction;
 

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Actions\Twitter\Tweets\Likes;
+namespace App\Application\Actions\Twitter\Tweets\Likes\ManageLikes;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class GetLikedTweetsAction extends TweetsAction
+class LikeTweetAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
@@ -19,21 +19,14 @@ class GetLikedTweetsAction extends TweetsAction
       $id = ''.$this->args['user_id'];
 
       $options = [
-        'query' => [
-          'expansions',
-          'max_results',
-          'media.fields',
-          'pagination_token',
-          'place.fields',
-          'poll.fields',
-          'tweet.fields',
-          'user.fields'
+        'body' => [
+          'tweet_id'
         ]
       ];
   
       $params = $this->sortParams($options);
 
-      $payload = $this->tweetsRepository->getLikedTweets($id, $params);
+      $payload = $this->tweetsRepository->likeTweet($id, $params);
 
       // Return response to user
       return $this
