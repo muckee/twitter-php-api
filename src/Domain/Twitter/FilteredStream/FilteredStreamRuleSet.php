@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Twitter\Tweets;
+namespace App\Domain\Twitter\FilteredStream;
 
 use JsonSerializable;
 
-use App\Domain\Twitter\Tweets\FilteredStreamRule;
+use App\Domain\Twitter\FilteredStream\FilteredStreamRule;
 use App\Domain\Twitter\Metadata;
 
 class FilteredStreamRuleSet implements JsonSerializable

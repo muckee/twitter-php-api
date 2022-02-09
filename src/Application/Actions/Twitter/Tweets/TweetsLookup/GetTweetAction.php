@@ -6,9 +6,9 @@ namespace App\Application\Actions\Twitter\Tweets\TweetsLookup;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\TwitterAction;
+use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class GetTweetAction extends TwitterAction
+class GetTweetAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
@@ -16,7 +16,7 @@ class GetTweetAction extends TwitterAction
     protected function action(): Response
     {
 
-      $id = ''.$this->args['id'];
+      $id = ''.$this->args['tweet_id'];
 
       $options = [
         'query' => [
@@ -31,7 +31,7 @@ class GetTweetAction extends TwitterAction
 
       $params = $this->sortParams($options);
 
-      $payload = $this->twitterRepository->getTweet($id, $params);
+      $payload = $this->tweetsRepository->getTweet($id, $params);
 
       // Return response to user
       return $this

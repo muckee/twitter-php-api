@@ -6,9 +6,9 @@ namespace App\Application\Actions\Twitter\Tweets\FilteredStream;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\TwitterAction;
+use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class GetFilteredStreamAction extends TwitterAction
+class GetFilteredStreamAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
@@ -32,7 +32,7 @@ class GetFilteredStreamAction extends TwitterAction
       // Store valid query parameters in $params array
       $params = $this->sortParams($options);
 
-      $payload = $this->twitterRepository->getFilteredStream($params);
+      $payload = $this->tweetsRepository->getFilteredStream($params);
 
       // Return response to user
       return $this

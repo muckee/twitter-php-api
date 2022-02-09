@@ -6,16 +6,16 @@ namespace App\Application\Actions\Twitter\Tweets\Retweets;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\TwitterAction;
+use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class CreateRetweetAction extends TwitterAction
+class CreateRetweetAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
      */
     protected function action(): Response
     {
-      $id = ''.$this->args['id'];
+      $id = ''.$this->args['user_id'];
 
       $options = [
         'body' => [
@@ -25,7 +25,7 @@ class CreateRetweetAction extends TwitterAction
   
       $params = $this->sortParams($options);
 
-      $payload = $this->twitterRepository->createRetweet($id, $params);
+      $payload = $this->tweetsRepository->createRetweet($id, $params);
 
       // Return response to user
       return $this

@@ -6,9 +6,9 @@ namespace App\Application\Actions\Twitter\Tweets\HideReplies;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\TwitterAction;
+use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class HideReplyAction extends TwitterAction
+class HideReplyAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
@@ -26,7 +26,7 @@ class HideReplyAction extends TwitterAction
 
       $tweetId = ''.$this->args['tweet_id'];
 
-      $payload = $this->twitterRepository->hideReply($tweetId, $params);
+      $payload = $this->tweetsRepository->hideReply($tweetId, $params);
 
       // Return response to user
       return $this

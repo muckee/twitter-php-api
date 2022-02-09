@@ -8,20 +8,13 @@ use App\Application\Actions\Action;
 
 use Psr\Log\LoggerInterface;
 
-use App\Domain\Twitter\TwitterRepository;
-
 abstract class TwitterAction extends Action
 {
 
-  protected TwitterRepository $twitterRepository;
-
   public function __construct(
-    LoggerInterface $logger,
-    TwitterRepository $twitterRepository
+    LoggerInterface $logger
   ) {
     parent::__construct($logger);
-
-    $this->twitterRepository = $twitterRepository;
   }
 
   /**

@@ -6,9 +6,9 @@ namespace App\Application\Actions\Twitter\Tweets\Timelines;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\TwitterAction;
+use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class GetUserTimelineAction extends TwitterAction
+class GetUserTimelineAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
@@ -17,7 +17,7 @@ class GetUserTimelineAction extends TwitterAction
     {
 
       // Retrieve ID argument from request
-      $id =''.$this->args['id'];
+      $id =''.$this->args['user_id'];
 
        // Define list of known query options for this action
       $options = [
@@ -41,7 +41,7 @@ class GetUserTimelineAction extends TwitterAction
       $params = $this->sortParams($options);
 
       // Retrieve user timeline from Twitter API
-      $payload = $this->twitterRepository->getUserTimeline(
+      $payload = $this->tweetsRepository->getUserTimeline(
         $id,
         $params
       );

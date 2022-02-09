@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Twitter\Tweets;
+namespace App\Domain\Twitter\FilteredStream;
 
 use JsonSerializable;
 

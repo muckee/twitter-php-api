@@ -6,19 +6,19 @@ namespace App\Application\Actions\Twitter\Tweets\Retweets;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\TwitterAction;
+use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class DeleteRetweetAction extends TwitterAction
+class DeleteRetweetAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
      */
     protected function action(): Response
     {
-      $id = ''.$this->args['id'];
+      $id = ''.$this->args['user_id'];
       $sourceTweetId = ''.$this->args['source_tweet_id'];
 
-      $payload = $this->twitterRepository->deleteRetweet($id, $sourceTweetId);
+      $payload = $this->tweetsRepository->deleteRetweet($id, $sourceTweetId);
 
       // Return response to user
       return $this

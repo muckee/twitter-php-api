@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Actions\Twitter\Tweets\TweetsLookup;
+namespace App\Application\Actions\Twitter\Users\UsersLookup;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\Tweets\TweetsAction;
+use App\Application\Actions\Twitter\Users\UsersAction;
 
-class GetTweetsAction extends TweetsAction
+class GetAuthorizedUserAction extends UsersAction
 {
   /**
    * {@inheritdoc}
@@ -18,11 +18,7 @@ class GetTweetsAction extends TweetsAction
     // Define list of known query options for this action
     $options = [
       'query' => [
-        'ids',
         'expansions',
-        'media.fields',
-        'place.fields',
-        'poll.fields',
         'tweet.fields',
         'user.fields'
       ]
@@ -31,7 +27,7 @@ class GetTweetsAction extends TweetsAction
     $params = $this->sortParams($options);
 
     // Get tweets based on list of IDs
-    $payload = $this->tweetsRepository->getTweets($params);
+    $payload = $this->usersRepository->getAuthorizedUser($params);
 
     // Return response to user
     return $this

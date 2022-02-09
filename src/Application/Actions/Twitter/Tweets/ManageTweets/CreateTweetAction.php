@@ -6,9 +6,9 @@ namespace App\Application\Actions\Twitter\Tweets\ManageTweets;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\TwitterAction;
+use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class CreateTweetAction extends TwitterAction
+class CreateTweetAction extends TweetsAction
 {
   /**
    * {@inheritdoc}
@@ -39,7 +39,7 @@ class CreateTweetAction extends TwitterAction
     $params = $this->sortParams($options);
 
     // Create tweet
-    $payload = $this->twitterRepository->createTweet($params);
+    $payload = $this->tweetsRepository->createTweet($params);
 
     // Return response to user
     return $this

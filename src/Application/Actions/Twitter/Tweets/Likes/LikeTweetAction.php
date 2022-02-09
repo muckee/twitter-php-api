@@ -6,15 +6,17 @@ namespace App\Application\Actions\Twitter\Tweets\Likes;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\TwitterAction;
+use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class LikeTweetAction extends TwitterAction
+class LikeTweetAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
      */
     protected function action(): Response
     {
+
+      $id = ''.$this->args['user_id'];
 
       $options = [
         'body' => [
@@ -24,9 +26,7 @@ class LikeTweetAction extends TwitterAction
   
       $params = $this->sortParams($options);
 
-      $id = ''.$this->args['id'];
-
-      $payload = $this->twitterRepository->likeTweet($id, $params);
+      $payload = $this->tweetsRepository->likeTweet($id, $params);
 
       // Return response to user
       return $this

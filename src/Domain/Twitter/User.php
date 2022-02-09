@@ -8,6 +8,8 @@ use JsonSerializable;
 
 class User implements JsonSerializable
 {
+  // TODO: Add optional properties from responses in API docs
+
   private ?string $id;
 
   private string $name;

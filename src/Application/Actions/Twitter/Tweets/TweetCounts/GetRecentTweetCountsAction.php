@@ -6,9 +6,9 @@ namespace App\Application\Actions\Twitter\Tweets\TweetCounts;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\TwitterAction;
+use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class GetRecentTweetCountsAction extends TwitterAction
+class GetRecentTweetCountsAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
@@ -41,7 +41,7 @@ class GetRecentTweetCountsAction extends TwitterAction
       $params = $this->sortParams($options);
 
       // Retrieve user timeline from Twitter API
-      $payload = $this->twitterRepository->getUserTimeline(
+      $payload = $this->tweetsRepository->getUserTimeline(
         $id,
         $params
       );
@@ -49,7 +49,7 @@ class GetRecentTweetCountsAction extends TwitterAction
       // Return response to user
       // TODO: Create models for all JSON responses in order to properly declare types
       return $this->respondWithData(
-                    json_decode($payload)
+                    $payload
                   )->withHeader(
                     'Content-Type', 'application/json'
                   );

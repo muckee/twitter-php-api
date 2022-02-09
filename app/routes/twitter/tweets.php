@@ -2,28 +2,127 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/tweets/tweets-lookup.php';
+use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 
-require __DIR__ . '/tweets/manage-tweets.php';
+use App\Application\Actions\Twitter\Tweets\TweetsLookup\GetTweetAction;
+use App\Application\Actions\Twitter\Tweets\TweetsLookup\GetTweetsAction;
 
-require __DIR__ . '/tweets/timelines.php';
+use App\Application\Actions\Twitter\Tweets\ManageTweets\CreateTweetAction;
+use App\Application\Actions\Twitter\Tweets\ManageTweets\DeleteTweetAction;
 
-require __DIR__ . '/tweets/search-tweets.php';
+use App\Application\Actions\Twitter\Tweets\SearchTweets\SearchRecentTweetsAction;
 
-require __DIR__ . '/tweets/tweet-counts.php';
+use App\Application\Actions\Twitter\Tweets\TweetCounts\GetRecentTweetCountsAction;
 
-require __DIR__ . '/tweets/filtered-stream.php';
+use App\Application\Actions\Twitter\Tweets\FilteredStream\UpdateFilteredStreamRulesAction;
+use App\Application\Actions\Twitter\Tweets\FilteredStream\GetFilteredStreamRulesAction;
+use App\Application\Actions\Twitter\Tweets\FilteredStream\GetFilteredStreamAction;
+
+use App\Application\Actions\Twitter\Tweets\Retweets\GetRetweetsByTweetIdAction;
+
+use App\Application\Actions\Twitter\Tweets\Likes\GetLikingUsersAction;
+
+use App\Application\Actions\Twitter\Tweets\HideReplies\HideReplyAction;
 
 /**
  * TODO: At the time of writing, Twitter API documentation
  * does not contain an API reference for 'Volume streams' endpoints.
  * Periodically check documentation for updates.
- * Once implemented, uncomment following line and create relevant actions/repositories.
+ * Once implemented, create relevant actions/repositories.
  */
-// require __DIR__ . '/tweets/volume-streams.php';
+  
+/**
+ * Retrieve a list of tweets by ID
+ */
+$group->get('/tweets', GetTweetsAction::class);
 
-require __DIR__ . '/tweets/retweets.php';
+/**
+ * Publish a new tweet
+ */
+$group->post('/tweets', CreateTweetAction::class);
 
-require __DIR__ . '/tweets/likes.php';
+$group->group('/tweets', function (Group $tweets) {
 
-require __DIR__ . '/tweets/hide-replies.php';
+  /**
+   * Receive a count of Tweets that match a query in the last 7 days
+   * TODO: Add support for '/tweets/counts/all' in case of future academic use
+   */
+  $tweets->get('/counts/recent',
+    GetRecentTweetCountsAction::class
+  );
+  
+  /**
+   * Retrieve a single tweet by ID
+   */
+  $tweets->get('/{tweet_id}',
+    GetTweetAction::class
+  );
+
+  /**
+   * Delete a tweet with specified ID
+   */
+  $tweets->delete('/{tweet_id}',
+    DeleteTweetAction::class
+  );
+  
+  $tweets->group('/{tweet_id}', function (Group $tweet) {
+
+    /**
+     * Retrieve list of users who have Retweeted a Tweet
+     */
+    $tweet->get('/retweeted_by',
+      GetRetweetsByTweetIdAction::class
+    );
+
+    /**
+     * Retrieve list of users who have Liked a Tweet
+     */
+    $tweet->get('/liking_users',
+      GetLikingUsersAction::class
+    );
+  
+
+    /**
+     * Hide/unhide a tweet
+     */
+    $tweet->put('/hidden',
+      HideReplyAction::class
+    );
+  });
+
+  $tweets->group('/search', function (Group $search) {
+
+    /**
+     * Search for Tweets published in the last 7 days
+     * TODO: Add support for /tweets/search/all in case of future academic use
+     */
+    $search->get('/recent',
+      SearchRecentTweetsAction::class
+    );
+  
+    /**
+     * Connect to the stream
+     */
+    $search->get('/stream', 
+      GetFilteredStreamAction::class
+    );
+  
+    $search->group('/stream', function (Group $stream) {
+  
+      /**
+       * Retrieve your stream's rules
+       */
+      $stream->get('/rules', 
+        GetFilteredStreamRulesAction::class
+      );
+  
+      /**
+       * Add or delete rules from your stream
+       */
+      $stream->post('/rules', 
+        UpdateFilteredStreamRulesAction::class
+      );
+    });
+  });
+
+});

@@ -6,9 +6,9 @@ namespace App\Application\Actions\Twitter\Tweets\SearchTweets;
 
 use Psr\Http\Message\ResponseInterface as Response;
 
-use App\Application\Actions\Twitter\TwitterAction;
+use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
-class SearchRecentTweetsAction extends TwitterAction
+class SearchRecentTweetsAction extends TweetsAction
 {
     /**
      * {@inheritdoc}
@@ -35,7 +35,7 @@ class SearchRecentTweetsAction extends TwitterAction
   
       $params = $this->sortParams($options);
 
-      $payload = $this->twitterRepository->searchRecentTweets($params);
+      $payload = $this->tweetsRepository->searchRecentTweets($params);
 
       // Return response to user
       return $this
