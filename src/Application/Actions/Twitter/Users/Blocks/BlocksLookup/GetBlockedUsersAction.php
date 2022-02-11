@@ -8,6 +8,10 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\Users\UsersAction;
 
+use App\Domain\Twitter\Model\User;
+use App\Domain\Twitter\Model\Metadata;
+use App\Domain\Twitter\Model\UserList;
+
 class GetBlockedUsersAction extends UsersAction
 {
   /**
@@ -30,12 +34,37 @@ class GetBlockedUsersAction extends UsersAction
 
     $params = $this->sortParams($options);
 
-    // Get blocked users
-    $payload = $this->usersRepository->getBlockedUsers($user_id, $params);
+    $uri = 'users' . '/' . $user_id . '/' . 'blocking';
 
-    // Return response to user
-    return $this
-      ->respondWithData($payload)
-      ->withHeader('Content-Type', 'application/json');
+    // Get blocked users
+    $response = $this->twitterOAuth->get($uri, $params);
+
+    $status = $this->twitterOAuth->getLastHttpCode();
+    if($this->exceptionHandler->handleErrors($status, $response)) {
+  
+      // Initialise empty array to store results
+      $results = [];
+  
+      if(property_exists($response, 'data')) {
+        // Iterate over resulting tweets
+        foreach($response->data as $result) {
+    
+          $user = new User();
+          $user->setByJson($result);
+    
+          $results[] = $user;
+        }
+      }
+  
+      $meta = new Metadata();
+      $meta->setByJson($response->meta);
+  
+      $payload = new UserList($results, $meta);
+
+      // Return response to user
+      return $this
+        ->respondWithData($payload)
+        ->withHeader('Content-Type', 'application/json');
+    }
   }
 }

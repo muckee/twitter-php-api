@@ -18,12 +18,25 @@ class UnmuteUserAction extends UsersAction
     $user_id = $this->args['user_id'];
     $target_user_id = $this->args['target_user_id'];
 
-    // Mute user
-    $payload = $this->usersRepository->unmuteUser($user_id, $target_user_id);
+    $uri = 'users' . '/' . $user_id . '/' . 'muting' . '/' . $target_user_id;
 
-    // Return response to user
-    return $this
-      ->respondWithData($payload)
-      ->withHeader('Content-Type', 'application/json');
+    // Get tweet
+    $response = $this->twitterOAuth->delete($uri);
+
+    $status = $this->twitterOAuth->getLastHttpCode();
+    if($this->exceptionHandler->handleErrors($status, $response)) {
+  
+      if(property_exists($response, 'data')) {
+        // TODO: Include response data as properties in Metadata class and return Metadata object to user
+        $payload = json_encode($response->data);
+      } else {
+        $payload = 'No valid response was found. Please contact the system administrator.';
+      }
+
+      // Return response to user
+      return $this
+        ->respondWithData($payload)
+        ->withHeader('Content-Type', 'application/json');
+    }
   }
 }

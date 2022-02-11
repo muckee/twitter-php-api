@@ -15,7 +15,15 @@ class GetFilteredStreamAction extends TweetsAction
      */
     protected function action(): Response
     {
-      // Define valid query parameters
+
+      $payload = 'Stream is not supported by this API. It must be called directly from your application.';
+
+      // Return response to user
+      return $this
+        ->respondWithData($payload)
+        ->withHeader('Content-Type', 'text/plain');
+
+        // Define valid query parameters
       $options = [
         'query' => [
           'backfill_minutes',
@@ -32,11 +40,28 @@ class GetFilteredStreamAction extends TweetsAction
       // Store valid query parameters in $params array
       $params = $this->sortParams($options);
 
-      $payload = $this->tweetsRepository->getFilteredStream($params);
+      $uri = 'tweets' . '/' . 'search' . '/' . 'stream';
 
-      // Return response to user
-      return $this
-        ->respondWithData($payload)
-        ->withHeader('Content-Type', 'text/plain');
+      $access_token = $this->twitterOAuth->oauth2(
+        'oauth2/token',
+        array( 'grant_type' => 'client_credentials' )
+      );
+    
+      $this->twitterOAuth->setBearer( $access_token->access_token );
+    
+      // Update filtered stream rules
+      $response = $this->twitterOAuth->get( $uri, $params, true );
+
+      $status = $this->twitterOAuth->getLastHttpCode();
+
+      if ( $this->exceptionHandler->handleErrors( $status, $response ) ) {
+
+        $payload = json_encode($response);
+
+        // Return response to user
+        return $this
+          ->respondWithData($payload)
+          ->withHeader('Content-Type', 'text/plain');
+      };
     }
 }

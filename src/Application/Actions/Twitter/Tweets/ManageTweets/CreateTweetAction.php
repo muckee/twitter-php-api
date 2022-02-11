@@ -8,6 +8,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
+use App\Domain\Twitter\Model\Tweet;
+
 class CreateTweetAction extends TweetsAction
 {
   /**
@@ -38,12 +40,28 @@ class CreateTweetAction extends TweetsAction
 
     $params = $this->sortParams($options);
 
+    $uri = 'tweets';
+
+    // Post new tweet
+    $response = $this->twitterOAuth->post($uri, $params, true);
+
     // Create tweet
     $payload = $this->tweetsRepository->createTweet($params);
 
-    // Return response to user
-    return $this
-      ->respondWithData($payload)
-      ->withHeader('Content-Type', 'application/json');
+    $status = $this->twitterOAuth->getLastHttpCode();
+
+    if ($this->exceptionHandler->handleErrors($status, $response)) {
+  
+      $payload = new Tweet();
+      
+      if(property_exists($response, 'data')) {
+        $payload->setByJson($response->data);
+      }
+
+      // Return response to user
+      return $this
+        ->respondWithData($payload)
+        ->withHeader('Content-Type', 'application/json');
+    };
   }
 }

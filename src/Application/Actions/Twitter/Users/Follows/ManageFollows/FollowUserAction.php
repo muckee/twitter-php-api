@@ -27,12 +27,25 @@ class FollowUserAction extends UsersAction
 
     $params = $this->sortParams($options);
 
-    // Get tweets based on list of IDs
-    $payload = $this->usersRepository->followUser($user_id, $params);
+    $uri = 'users' . '/' . $user_id . '/' . 'following';
 
-    // Return response to user
-    return $this
-      ->respondWithData($payload)
-      ->withHeader('Content-Type', 'application/json');
+
+    // Get tweet
+    $response = $this->twitterOAuth->post($uri, $params, true);
+
+    $status = $this->twitterOAuth->getLastHttpCode();
+    if($this->exceptionHandler->handleErrors($status, $response)) {
+  
+      if(property_exists($response, 'data')) {
+        $payload = json_encode($response->data);
+      } else {
+        $payload = 'No valid response was found. Please contact the system administrator.';
+      }
+
+      // Return response to user
+      return $this
+        ->respondWithData($payload)
+        ->withHeader('Content-Type', 'application/json');
+    }
   }
 }

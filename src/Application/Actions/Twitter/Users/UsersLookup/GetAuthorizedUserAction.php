@@ -8,6 +8,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\Users\UsersAction;
 
+use App\Domain\Twitter\Model\User;
+
 class GetAuthorizedUserAction extends UsersAction
 {
   /**
@@ -26,12 +28,21 @@ class GetAuthorizedUserAction extends UsersAction
 
     $params = $this->sortParams($options);
 
-    // Get tweets based on list of IDs
-    $payload = $this->usersRepository->getAuthorizedUser($params);
+    $uri = 'users' . '/' . 'me';
 
-    // Return response to user
-    return $this
-      ->respondWithData($payload)
-      ->withHeader('Content-Type', 'application/json');
+    // Get tweet
+    $response = $this->twitterOAuth->get($uri, $params);
+
+    $status = $this->twitterOAuth->getLastHttpCode();
+    if($this->exceptionHandler->handleErrors($status, $response)) {
+  
+      $payload = new User();
+      $payload->setByJson($response);
+
+      // Return response to user
+      return $this
+        ->respondWithData($payload)
+        ->withHeader('Content-Type', 'application/json');
+    }
   }
 }

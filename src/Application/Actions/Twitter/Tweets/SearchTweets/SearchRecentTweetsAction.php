@@ -8,6 +8,11 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
+// Models
+use App\Domain\Twitter\Model\Metadata;
+use App\Domain\Twitter\Model\Tweet;
+use App\Domain\Twitter\Model\TweetList;
+
 class SearchRecentTweetsAction extends TweetsAction
 {
     /**
@@ -35,11 +40,40 @@ class SearchRecentTweetsAction extends TweetsAction
   
       $params = $this->sortParams($options);
 
-      $payload = $this->tweetsRepository->searchRecentTweets($params);
+      $uri = 'tweets' . '/' . 'search' . '/' . 'recent';
+    
+      // Search recent tweets
+      $response = $this->twitterOAuth->get($uri, $params);
+    
+      $status = $this->twitterOAuth->getLastHttpCode();
+      if ($this->exceptionHandler->handleErrors($status, $response)) {
 
-      // Return response to user
-      return $this
-        ->respondWithData($payload)
-        ->withHeader('Content-Type', 'application/json');
+        // Initialise empty Tweets[] array
+        $tweets = array();
+        
+        if(property_exists($response, 'data')) {
+          // Iterate over results
+          for($i=0;$i<COUNT($response->data);$i++) {
+      
+            $tweet = new Tweet();
+            $tweet->setByJson($response->data[$i]);
+      
+            // Append Tweet object to $tweets array
+            $tweets[] = $tweet;
+          }
+        }
+  
+        $meta = new Metadata();
+        if(property_exists($response, 'meta')) {
+          $meta->setByJson($response->meta);
+        }
+  
+        $payload = new TweetList($tweets, $meta);
+
+        // Return response to user
+        return $this
+          ->respondWithData($tweets)
+          ->withHeader('Content-Type', 'application/json');
+      };
     }
 }

@@ -15,14 +15,28 @@ class DeleteRetweetAction extends TweetsAction
      */
     protected function action(): Response
     {
-      $id = ''.$this->args['user_id'];
-      $sourceTweetId = ''.$this->args['source_tweet_id'];
+      $user_id = $this->args['user_id'];
+      $tweet_id = $this->args['source_tweet_id'];
 
-      $payload = $this->tweetsRepository->deleteRetweet($id, $sourceTweetId);
+      $uri = 'users' . '/' . $user_id . '/' . 'retweets' . '/' . $tweet_id;
 
-      // Return response to user
-      return $this
-        ->respondWithData($payload)
-        ->withHeader('Content-Type', 'application/json');
+      // Update filtered stream rules
+      $response = $this->twitterOAuth->delete( $uri );
+
+      $status = $this->twitterOAuth->getLastHttpCode();
+
+      if ($this->exceptionHandler->handleErrors( $status, $response )) {
+
+        if(property_exists($response, 'data')) {
+          $payload = $response->data->retweeted;
+        } else {
+          $payload = 'No valid response was found. Please contact the system administrator.';
+        }
+
+        // Return response to user
+        return $this
+          ->respondWithData($payload)
+          ->withHeader('Content-Type', 'application/json');
+      };
     }
 }

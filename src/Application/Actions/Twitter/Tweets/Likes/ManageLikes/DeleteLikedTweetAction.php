@@ -15,15 +15,30 @@ class DeleteLikedTweetAction extends TweetsAction
      */
     protected function action(): Response
     {
-      $id = ''.$this->args['user_id'];
+      $user_id = $this->args['user_id'];
 
-      $tweetId = ''.$this->args['tweet_id'];
+      $tweet_id = $this->args['tweet_id'];
 
-      $payload = $this->tweetsRepository->deleteLikedTweet($id, $tweetId);
+      $uri = 'users' . '/' . $user_id . '/' . 'likes' . '/' . $tweet_id;
 
-      // Return response to user
-      return $this
-        ->respondWithData($payload)
-        ->withHeader('Content-Type', 'application/json');
+      // Update filtered stream rules
+      $response = $this->twitterOAuth->delete( $uri );
+
+      $status = $this->twitterOAuth->getLastHttpCode();
+
+
+      if ( $this->exceptionHandler->handleErrors( $status, $response ) ) {
+
+        if(property_exists($response, 'data')) {
+          $payload = $response->data->liked;
+        } else {
+          $payload = 'No valid response was found. Please contact the system administrator.';
+        }
+
+        // Return response to user
+        return $this
+          ->respondWithData($payload)
+          ->withHeader('Content-Type', 'application/json');
+      };
     }
 }

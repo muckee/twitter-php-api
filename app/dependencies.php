@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Abraham\TwitterOAuth\TwitterOAuth;
+use App\Application\Actions\Twitter\TwitterAction;
 use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -16,10 +17,6 @@ use App\Application\Settings\SettingsInterface;
 use App\Application\Handlers\TwitterExceptionHandler;
 
 use App\Domain\Twitter\TwitterRepository\TweetsRepository;
-use App\Infrastructure\Remote\RemoteTwitterRepository\RemoteTweetsRepository;
-
-use App\Domain\Twitter\TwitterRepository\UsersRepository;
-use App\Infrastructure\Remote\RemoteTwitterRepository\RemoteUsersRepository;
 
 return function (ContainerBuilder $containerBuilder) {
     $containerBuilder->addDefinitions([
@@ -43,16 +40,6 @@ return function (ContainerBuilder $containerBuilder) {
             $twitterOAuthSettings = $settings->get('twitterOAuth');
 
             return new TwitterOAuth(...$twitterOAuthSettings);
-        },
-        'twitterExceptionHandler' => function () {
-
-            return new TwitterExceptionHandler();
-        },
-        RemoteTwitterRepository::class => function (ContainerInterface $c) {
-            return new TweetsRepository(
-                $c->get('twitterOAuth'),
-                $c->get('twitterExceptionHandler')
-            );
         }
     ]);
 };

@@ -35,6 +35,18 @@ use App\Application\Actions\Twitter\Users\Mutes\MutesLookup\GetMutedUsersAction;
 use App\Application\Actions\Twitter\Users\Mutes\ManageMutes\MuteUserAction;
 use App\Application\Actions\Twitter\Users\Mutes\ManageMutes\UnmuteUserAction;
 
+use App\Application\Actions\Twitter\Lists\ListsLookup\GetOwnedListsAction;
+
+use App\Application\Actions\Twitter\Lists\ListMembers\ListMembersLookup\GetMemberListsAction;
+
+use App\Application\Actions\Twitter\Lists\ListFollows\ListFollowsLookup\GetFollowedListsAction;
+use App\Application\Actions\Twitter\Lists\ListFollows\ManageListFollows\FollowListAction;
+use App\Application\Actions\Twitter\Lists\ListFollows\ManageListFollows\UnfollowListAction;
+
+use App\Application\Actions\Twitter\Lists\PinnedLists\PinnedListsLookup\GetPinnedListsAction;
+use App\Application\Actions\Twitter\Lists\PinnedLists\ManagePinnedLists\PinListAction;
+use App\Application\Actions\Twitter\Lists\PinnedLists\ManagePinnedLists\UnpinListAction;
+
 $group->get('/users', GetUsersByIdAction::class);
 
 $group->group('/users', function (Group $users) {
@@ -106,5 +118,21 @@ $group->group('/users', function (Group $users) {
     $user->post('/muting', MuteUserAction::class);
 
     $user->delete('/muting', UnmuteUserAction::class);
+
+    $user->get('/owned_lists', GetOwnedListsAction::class);
+
+    $user->get('/list_memberships', GetMemberListsAction::class);
+
+    $user->get('/followed_lists', GetFollowedListsAction::class);
+
+    $user->post('/followed_lists', FollowListAction::class);
+
+    $user->delete('/followed_lists/{list_id}', UnfollowListAction::class);
+
+    $user->get('/pinned_lists', GetPinnedListsAction::class);
+
+    $user->post('/pinned_lists', PinListAction::class);
+
+    $user->delete('/pinned_lists/{list_id}', UnpinListAction::class);
   });
 });

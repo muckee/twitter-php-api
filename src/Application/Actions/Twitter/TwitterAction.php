@@ -4,17 +4,30 @@ declare(strict_types=1);
 
 namespace App\Application\Actions\Twitter;
 
+use Abraham\TwitterOAuth\TwitterOAuth;
 use App\Application\Actions\Action;
 
 use Psr\Log\LoggerInterface;
 
+use App\Application\Handlers\TwitterExceptionHandler;
+
 abstract class TwitterAction extends Action
 {
 
+  protected TwitterOAuth $twitterOAuth;
+
+  protected TwitterExceptionHandler $twitterExceptionHandler;
+
   public function __construct(
-    LoggerInterface $logger
+    LoggerInterface $logger,
+    TwitterOAuth $twitterOAuth,
+    TwitterExceptionHandler $twitterExceptionHandler
   ) {
     parent::__construct($logger);
+
+    $this->twitterOAuth = $twitterOAuth;
+    $this->twitterOAuth->setApiVersion('2');
+    $this->exceptionHandler = $twitterExceptionHandler;
   }
 
   /**

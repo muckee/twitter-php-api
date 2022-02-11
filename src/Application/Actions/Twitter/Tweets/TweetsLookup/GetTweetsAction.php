@@ -8,6 +8,11 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
+// Models
+use App\Domain\Twitter\Model\Metadata;
+use App\Domain\Twitter\Model\Tweet;
+use App\Domain\Twitter\Model\TweetList;
+
 class GetTweetsAction extends TweetsAction
 {
   /**
@@ -30,12 +35,42 @@ class GetTweetsAction extends TweetsAction
 
     $params = $this->sortParams($options);
 
-    // Get tweets based on list of IDs
-    $payload = $this->tweetsRepository->getTweets($params);
+    // Get tweet
+    $response = $this->twitterOAuth->get(
+      'tweets',
+      $params);
 
-    // Return response to user
-    return $this
-      ->respondWithData($payload)
-      ->withHeader('Content-Type', 'application/json');
+    $status = $this->twitterOAuth->getLastHttpCode();
+
+    if($this->exceptionHandler->handleErrors($status, $response)) {
+
+      // Initialise empty array to store results
+      $tweets = array();
+
+      if(property_exists($response, 'data')) {
+
+        // Iterate over resulting tweets
+        foreach($response->data as $result) {
+  
+          $tweet = new Tweet();
+          $tweet->setByJson($result);
+  
+          $tweets[] = $tweet;
+        }
+      }
+  
+      $meta = new Metadata();
+
+      if(property_exists($response, 'meta')) {
+        $meta->setByJson($response->meta);
+      }
+
+      $payload = new TweetList($tweets, $meta);
+
+      // Return response to user
+      return $this
+        ->respondWithData($payload)
+        ->withHeader('Content-Type', 'application/json');
+    }
   }
 }

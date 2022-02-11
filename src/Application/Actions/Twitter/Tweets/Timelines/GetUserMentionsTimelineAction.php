@@ -8,6 +8,11 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
+// Models
+use App\Domain\Twitter\Model\Metadata;
+use App\Domain\Twitter\Model\Tweet;
+use App\Domain\Twitter\Model\TweetList;
+
 class GetUserMentionsTimelineAction extends TweetsAction
 {
     /**
@@ -17,7 +22,7 @@ class GetUserMentionsTimelineAction extends TweetsAction
     {
 
       // Retrieve ID argument from request
-      $id = ''.$this->args['user_id'];
+      $user_id = $this->args['user_id'];
 
        // Define list of known query options for this action
       $options = [
@@ -39,18 +44,46 @@ class GetUserMentionsTimelineAction extends TweetsAction
 
       $params = $this->sortParams($options);
 
-      // Retrieve user timeline from Twitter API
-      $payload = $this->tweetsRepository->getUserMentionsTimeline(
-        $id,
+      $uri = 'users' . '/' . $user_id . '/' . 'mentions';
+
+      // Delete tweet by ID
+      $response = $this->twitterOAuth->get(
+        $uri,
         $params
       );
 
-      // Return response to user
-      // TODO: Create models for all JSON responses in order to properly declare types
-      return $this->respondWithData(
-                    $payload
-                  )->withHeader(
-                    'Content-Type', 'application/json'
-                  );
+      $status = $this->twitterOAuth->getLastHttpCode();
+
+      if ($this->exceptionHandler->handleErrors($status, $response)) {
+
+        // Initialise empty Tweets[] array
+        $tweets = array();
+        
+        if(property_exists($response, 'data')) {
+          // Iterate over results
+          for($i=0;$i<COUNT($response->data);$i++) {
+      
+            $tweet = new Tweet();
+            $tweet->setByJson($response->data[$i]);
+      
+            // Append Tweet object to $tweets array
+            $tweets[] = $tweet;
+          }
+        }
+  
+        $meta = new Metadata();
+        if(property_exists($response, 'meta')) {
+          $meta->setByJson($response->meta);
+        }
+  
+        $payload = new TweetList($tweets, $meta);
+
+        // Return response to user
+        return $this->respondWithData(
+                      $payload
+                    )->withHeader(
+                      'Content-Type', 'application/json'
+                    );
+      };
     }
 }

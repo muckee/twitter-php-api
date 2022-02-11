@@ -25,12 +25,25 @@ class BlockUserAction extends UsersAction
 
     $params = $this->sortParams($options);
 
-    // Block user
-    $payload = $this->usersRepository->blockUser($user_id, $params);
+    $uri = 'users' . '/' . $user_id . '/' . 'blocking';
 
-    // Return response to user
-    return $this
-      ->respondWithData($payload)
-      ->withHeader('Content-Type', 'application/json');
+    // Get tweet
+    $response = $this->twitterOAuth->post($uri, $params, true);
+
+    $status = $this->twitterOAuth->getLastHttpCode();
+    if($this->exceptionHandler->handleErrors($status, $response)) {
+  
+      if(property_exists($response, 'data')) {
+        // TODO: Include response data as properties in Metadata class and return Metadata object to user
+        $payload = json_encode($response->data);
+      } else {
+        $payload = 'No valid response found. Please contact the system administrator.';
+      }
+
+      // Return response to user
+      return $this
+        ->respondWithData($payload)
+        ->withHeader('Content-Type', 'application/json');
+    }
   }
 }

@@ -10,27 +10,44 @@ use App\Application\Actions\Twitter\Tweets\TweetsAction;
 
 class HideReplyAction extends TweetsAction
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function action(): Response
-    {
+  /**
+   * {@inheritdoc}
+   */
+  protected function action(): Response
+  {
 
-      $options = [
-        'body' => [
-          'hidden'
-        ]
-      ];
+    // TODO: Fix 'unauthorised' issue
+    $payload = 'This endpoint is not currently supported. Please contact the system administrator.';
+
+    // Return response to user
+    return $this
+      ->respondWithData($payload)
+      ->withHeader('Content-Type', 'application/json');
+
+    $tweet_id = ''.$this->args['tweet_id'];
+
+    $options = [
+      'body' => [
+        'hidden'
+      ]
+    ];
+
+    $params = $this->sortParams($options);
   
-      $params = $this->sortParams($options);
+    $uri = 'tweets' . '/' . $tweet_id . '/' . 'hidden';
 
-      $tweetId = ''.$this->args['tweet_id'];
+    $result = $this->twitterOAuth->put( $uri, $params, true );
 
-      $payload = $this->tweetsRepository->hideReply($tweetId, $params);
+    $status = $this->twitterOAuth->getLastHttpCode();
+
+    if ( $this->exceptionHandler->handleErrors( $status, $result ) ) {
+
+      $payload = json_encode( $result );
 
       // Return response to user
       return $this
         ->respondWithData($payload)
         ->withHeader('Content-Type', 'application/json');
-    }
+    };
+  }
 }

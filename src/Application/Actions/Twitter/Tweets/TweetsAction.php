@@ -4,24 +4,25 @@ declare(strict_types=1);
 
 namespace App\Application\Actions\Twitter\Tweets;
 
+use Abraham\TwitterOAuth\TwitterOAuth;
 use Psr\Log\LoggerInterface;
 
 use App\Application\Actions\Twitter\TwitterAction;
 
-use App\Domain\Twitter\TwitterRepository\TweetsRepository;
+use App\Application\Handlers\TwitterExceptionHandler;
 
 abstract class TweetsAction extends TwitterAction
 {
 
-  protected TweetsRepository $tweetsRepository;
-
   public function __construct(
     LoggerInterface $logger,
-    TweetsRepository $tweetsRepository
+    TwitterOAuth $twitterOAuth,
+    TwitterExceptionHandler $twitterExceptionHandler
   ) {
-    parent::__construct($logger);
-
-    $this->tweetsRepository = $tweetsRepository;
+    parent::__construct(
+      $logger,
+      $twitterOAuth,
+      $twitterExceptionHandler
+    );
   }
-
 }
