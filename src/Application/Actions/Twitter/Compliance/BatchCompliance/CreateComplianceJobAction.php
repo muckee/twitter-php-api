@@ -15,7 +15,6 @@ class CreateComplianceJobAction extends ComplianceAction
    */
   protected function action(): Response
   {
-    $job_id = $this->args['job_id'];
 
     $options = [
       'body' => [
